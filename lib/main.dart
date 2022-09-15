@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:testtraining/step_0/page_zero.dart';
 import 'package:testtraining/step_1/page_one.dart';
+import 'package:testtraining/step_2/page_two.dart';
 
 void main() async {
   await WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +48,12 @@ class MyHomePage extends StatelessWidget {
                 builder: (context) => const PageOne(),
               )),
               child: const Text('Step 1'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const PageTwo(),
+              )),
+              child: const Text('Step 2'),
             ),
           ],
         ),

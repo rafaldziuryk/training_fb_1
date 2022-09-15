@@ -1,8 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
-class PageOne extends StatelessWidget {
-  const PageOne({Key? key}) : super(key: key);
+class PageTwo extends StatefulWidget {
+  const PageTwo({Key? key}) : super(key: key);
+
+  @override
+  State<PageTwo> createState() => _PageTwoState();
+}
+
+class _PageTwoState extends State<PageTwo> {
+  late final FirebaseRemoteConfig remoteConfig;
+
+  @override
+  void initState() {
+    remoteConfig = FirebaseRemoteConfig.instance;
+    remoteConfig.setConfigSettings(RemoteConfigSettings(
+      fetchTimeout: const Duration(minutes: 1),
+      minimumFetchInterval: const Duration(seconds: 10),
+    ));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +37,8 @@ class PageOne extends StatelessWidget {
         // the App.build method, and use it to set our appbar title.
         title: Text('Stream'),
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('reports').snapshots(),
+      body: FutureBuilder(
+        future: FirebaseMessaging.instance.getToken(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -29,16 +48,8 @@ class PageOne extends StatelessWidget {
             case ConnectionState.active:
             case ConnectionState.done:
               if (snapshot.hasData) {
-                final QuerySnapshot data = snapshot.data as QuerySnapshot;
-                return ListView.builder(
-                  itemCount: data.docs.length,
-                  itemBuilder: (context, index) {
-                    final element = data.docs[index].data()! as Map;
-                    return ListTile(
-                      title: Text(element['title']),
-                    );
-                  },
-                );
+                print("Token: ${snapshot.data}");
+                return Text("Token: ${snapshot.data}");
               } else if (snapshot.hasError) {
                 return Text('Error');
               } else {
