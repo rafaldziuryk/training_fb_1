@@ -3,23 +3,32 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
-class PageTwo extends StatefulWidget {
-  const PageTwo({Key? key}) : super(key: key);
+class PageThree extends StatefulWidget {
+  const PageThree({Key? key}) : super(key: key);
 
   @override
-  State<PageTwo> createState() => _PageTwoState();
+  State<PageThree> createState() => _PageThreeState();
 }
 
-class _PageTwoState extends State<PageTwo> {
-  late final FirebaseRemoteConfig remoteConfig;
+class _PageThreeState extends State<PageThree> {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   @override
   void initState() {
-    remoteConfig = FirebaseRemoteConfig.instance;
-    remoteConfig.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: const Duration(minutes: 1),
-      minimumFetchInterval: const Duration(seconds: 10),
-    ));
+    messaging
+        .requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    )
+        .then((settings) {
+      print('User granted permission: ${settings.authorizationStatus}');
+    });
+
     super.initState();
   }
 
@@ -38,7 +47,7 @@ class _PageTwoState extends State<PageTwo> {
         title: Text('Stream'),
       ),
       body: FutureBuilder(
-        future: remoteConfig.fetchAndActivate(),
+        future: FirebaseMessaging.instance.getToken(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -48,8 +57,8 @@ class _PageTwoState extends State<PageTwo> {
             case ConnectionState.active:
             case ConnectionState.done:
               if (snapshot.hasData) {
-                print("Feature: ${remoteConfig.getString('feature')}");
-                return Text("Feature: ${remoteConfig.getString('feature')}");
+                print("Token: ${snapshot.data}");
+                return SelectableText("Token: ${snapshot.data}");
               } else if (snapshot.hasError) {
                 print(snapshot.error);
                 return Text('Error');

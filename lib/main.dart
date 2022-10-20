@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:testtraining/step_0/page_zero.dart';
 import 'package:testtraining/step_1/page_one.dart';
 import 'package:testtraining/step_2/page_two.dart';
+import 'package:testtraining/step_3/page_three.dart';
+import 'firebase_options.dart';
 
 void main() async {
   await WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -54,6 +58,12 @@ class MyHomePage extends StatelessWidget {
                 builder: (context) => const PageTwo(),
               )),
               child: const Text('Step 2'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const PageThree(),
+              )),
+              child: const Text('Step 3'),
             ),
           ],
         ),

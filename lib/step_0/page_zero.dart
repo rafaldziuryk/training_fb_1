@@ -41,6 +41,7 @@ class PageZero extends StatelessWidget {
                   },
                 );
               } else if (snapshot.hasError) {
+                print(snapshot.error);
                 return Text('Error');
               } else {
                 return SizedBox.shrink();
